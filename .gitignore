@@ -1,0 +1,9 @@
+# Ignore sensitive files
+passwords.txt
+secret.key
+
+# Ignore directories
+logs/
+tmp/
+node_modules/
+Cloud-security-/

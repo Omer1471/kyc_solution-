@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monzo Design</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <section class="Section_section__vMEm_">
+        <div class="Section_contentContainer__AM_ay">
+            <h1 class="home_title__PsC91">Make money easy</h1>
+            <p>Monzo makes managing money as easy as 1-2-3.</p>
+            <p>1. See it all.</p>
+            <p>2. Spend confidently.</p>
+            <p>3. Save more.</p>
+            <div class="Row_Row__k7R1L">
+                <img src="google-play-badge.png" alt="Google Play Badge">
+                <a class="Button_button__30ukX" href="#">Get Monzo today</a>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
+
