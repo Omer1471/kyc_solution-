@@ -7,4 +7,5 @@ logs/
 tmp/
 node_modules/
 Cloud-security-/
-.env/
+#Ignore env file 
+.env
