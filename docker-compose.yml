@@ -15,11 +15,13 @@ services:
       - 8000:8000
     depends_on:
       - db
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
   db:
     image: postgres
     restart: always
     environment:
-      POSTGRES_PASSWORD: Rockerz88
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
@@ -29,11 +31,12 @@ services:
     image: dpage/pgadmin4
     restart: always
     environment:
-      PGADMIN_DEFAULT_EMAIL: liban.omer4@gmail.com
-      PGADMIN_DEFAULT_PASSWORD: Rockerz88@@
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
     ports:
       - 5050:80
     # pgadmin service configuration...
 
 volumes:
   pgdata:
+
