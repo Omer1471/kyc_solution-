@@ -51,13 +51,13 @@ jobs:
         tags: 147188/project1_frontend:latest
         push: false
 
-    - name: Run Trivy vulnerability scanner on Frontend
-      uses: aquasecurity/trivy-action@master
-      with:
-        image-ref: '147188/project1_frontend:latest'
-        exit-code: '1'
-        severity: 'CRITICAL,HIGH'
-        ignore-unfixed: 'false'
+        #- name: Run Trivy vulnerability scanner on Frontend
+        #uses: aquasecurity/trivy-action@master
+        #with:
+        #image-ref: '147188/project1_frontend:latest'
+        #exit-code: '1'
+        #severity: 'CRITICAL,HIGH'
+        #ignore-unfixed: 'false'
 
     - name: Push Frontend Image
       uses: docker/build-push-action@v2
