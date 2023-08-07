@@ -37,6 +37,12 @@ services:
       - 5050:80
     # pgadmin service configuration...
 
+  ansible:
+      image: project1/ansible
+    # Add any other configurations specific to your Ansible setup here     
+
+
+
 volumes:
   pgdata:
 
