@@ -19,7 +19,23 @@ jobs:
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-    - name: Build and Push Backend Image
+    - name: Build Backend Image
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: ./Dockerfile.backend
+        tags: 147188/project1_backend:latest
+        push: false
+
+    - name: Run Trivy vulnerability scanner on Backend
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: '147188/project1_backend:latest'
+        exit-code: '1'
+        severity: 'CRITICAL,HIGH'
+        ignore-unfixed: 'false'
+
+    - name: Push Backend Image
       uses: docker/build-push-action@v2
       with:
         context: .
@@ -27,7 +43,23 @@ jobs:
         tags: 147188/project1_backend:latest
         push: true
 
-    - name: Build and Push Frontend Image
+    - name: Build Frontend Image
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: ./Dockerfile.frontend
+        tags: 147188/project1_frontend:latest
+        push: false
+
+    - name: Run Trivy vulnerability scanner on Frontend
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: '147188/project1_frontend:latest'
+        exit-code: '1'
+        severity: 'CRITICAL,HIGH'
+        ignore-unfixed: 'false'
+
+    - name: Push Frontend Image
       uses: docker/build-push-action@v2
       with:
         context: .
