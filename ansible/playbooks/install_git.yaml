@@ -1,0 +1,14 @@
+---
+- name: Install git on remote hosts
+  hosts: my_remote_host
+  become: yes # This might be required to install packages
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install git
+      apt:
+        name: git
+        state: present
+
