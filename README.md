@@ -1,6 +1,7 @@
 # # Project1
 
 Project1 is a simple web application written in Go. It uses a PostgreSQL database for user management, and supports two core features - user registration and login.
+Please do not use this code production enviroment as it was designed soley for testing purposes. 
 
 ## Getting Started
 
