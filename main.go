@@ -7,10 +7,12 @@ import (
 	"net/http"
 	"os"
 
+	"myproject/kyc"
+
 	"github.com/gorilla/mux"
+	"github.com/joho/godotenv" //// New import
 	_ "github.com/lib/pq"
 	"golang.org/x/crypto/bcrypt"
-	"github.com/joho/godotenv" //// New import
 )
 
 type User struct {
@@ -43,10 +45,33 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// Create KYC documents table if not exists
+	err = createKYCDocumentTable(db)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	r := mux.NewRouter()
 	r.HandleFunc("/register", registerHandler).Methods("POST")
 	r.HandleFunc("/login", loginHandler).Methods("POST")
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/")))
+
+	// Add KYC routes using the kyc package functions
+	r.HandleFunc("/kyc/upload", func(w http.ResponseWriter, r *http.Request) {
+		kyc.UploadKYCDocumentHandler(w, r, db)
+	}).Methods("POST")
+
+	r.HandleFunc("/kyc/status/{document_id}", func(w http.ResponseWriter, r *http.Request) {
+		kyc.KYCStatusHandler(w, r, db)
+	}).Methods("GET")
+
+
+	// Add KYC routes using the kyc handler
+	kycHandler := kyc.NewKYCHandler(db)
+
+	r.HandleFunc("/kyc/upload", kycHandler.UploadKYCDocumentHandler).Methods("POST")
+	r.HandleFunc("/kyc/status/{document_id}", kycHandler.KYCStatusHandler).Methods("GET")
+
 
 	http.Handle("/", r)
 	if err = http.ListenAndServe(":5000", nil); err != nil {
@@ -110,3 +135,15 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
+func createKYCDocumentTable(db *sql.DB) error {
+	_, err := db.Exec(`
+		CREATE TABLE IF NOT EXISTS kyc_documents (
+			id SERIAL PRIMARY KEY,
+			user_id INT REFERENCES users(id),
+			document_type VARCHAR(255) NOT NULL,
+			document_data BYTEA NOT NULL,
+			status VARCHAR(50) DEFAULT 'Pending'
+		);
+	`)
+	return err
+}
