@@ -1,0 +1,15 @@
+---
+- name: Deploy Project1
+  hosts: my_remote_host  # Use the group name defined in inventory.ini
+  become: true
+  tasks:
+    - name: Copy project files
+      copy:
+        src: /var/project1  # Source directory on your local machine
+        dest: /var/project  # Destination directory on the remote server
+      register: copy_result
+
+    - name: Ensure copied files are present
+      debug:
+        var: copy_result
+
