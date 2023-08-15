@@ -1,4 +1,4 @@
-name: Build and Push Docker Image
+name: Build, Scan, and Push Docker Image
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - master
 
 jobs:
-  build:
+  build_and_scan:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,6 +26,7 @@ jobs:
 
     - name: Build Backend Image
       uses: docker/build-push-action@v2
+      id: build_backend
       with:
         context: .
         file: ./Dockerfile.backend
@@ -42,6 +43,7 @@ jobs:
 
     - name: Build Frontend Image
       uses: docker/build-push-action@v2
+      id: build_frontend
       with:
         context: .
         file: ./Dockerfile.frontend
@@ -55,4 +57,34 @@ jobs:
         file: ./Dockerfile.frontend
         tags: 147188/project1_frontend:latest
         push: true
+
+    - name: Install Trivy
+      run: |
+        wget https://github.com/aquasecurity/trivy/releases/download/v0.19.2/trivy_0.19.2_Linux-64bit.deb
+        sudo dpkg -i trivy_0.19.2_Linux-64bit.deb
+
+    - name: Scan Backend Image with Trivy and Suggest Update
+      run: |
+        trivy image 147188/project1_backend:latest
+        echo "::set-output name=vuln_backend::$(trivy image -f json 147188/project1_backend:latest)"
+
+    - name: Scan Frontend Image with Trivy and Suggest Update
+      run: |
+        trivy image 147188/project1_frontend:latest || true
+        echo "::set-output name=vuln_frontend::$(trivy image -f json 147188/project1_frontend:latest || true)"
+
+    - name: Analyze Vulnerabilities and Suggest Update
+      run: |
+        if [ -n "${{ steps.build_and_scan.outputs.vuln_backend }}" ]; then
+          echo "Backend image vulnerabilities detected!"
+          echo "Vulnerabilities:"
+          echo "${{ steps.build_and_scan.outputs.vuln_backend }}"
+          echo "Consider updating your backend image."
+        fi
+        if [ -n "${{ steps.build_and_scan.outputs.vuln_frontend }}" ]; then
+          echo "Frontend image vulnerabilities detected!"
+          echo "Vulnerabilities:"
+          echo "${{ steps.build_and_scan.outputs.vuln_frontend }}"
+          echo "Consider updating your frontend image."
+        fi
 
