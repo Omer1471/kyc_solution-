@@ -88,3 +88,28 @@ jobs:
           echo "Consider updating your frontend image."
         fi
 
+    # Notify via Email
+    - name: Notify via Email if Backend Scan Failed
+      if: failure() && steps.build_backend.outcome == 'success' # Only notify if build was successful but scan failed
+      uses: dawidd6/action-send-mail@v3
+      with:
+        server_address: smtp.gmail.com
+        server_port: 465
+        username: ${{ secrets.EMAIL_USERNAME }}
+        password: ${{ secrets.EMAIL_PASSWORD }}
+        subject: Critical Vulnerabilities Detected in Backend Image
+        to: your-email@example.com
+        body: Critical vulnerabilities detected in the backend image!
+
+    - name: Notify via Email if Frontend Scan Failed
+      if: failure() && steps.build_frontend.outcome == 'success' # Only notify if build was successful but scan failed
+      uses: dawidd6/action-send-mail@v3
+      with:
+        server_address: smtp.gmail.com
+        server_port: 465
+        username: ${{ secrets.EMAIL_USERNAME }}
+        password: ${{ secrets.EMAIL_PASSWORD }}
+        subject: Critical Vulnerabilities Detected in Frontend Image
+        to: liban.omer4@gmail.com
+        body: Critical vulnerabilities detected in the frontend image!
+
