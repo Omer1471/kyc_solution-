@@ -150,7 +150,7 @@ jobs:
 
     - name: Notify via Email if Frontend Scan Failed
       if: failure() && steps.build_frontend.outcome == 'success' # Only notify if build was successful but scan failed
-      uses: dawidd6/action-send-mail@v3
+      uses: dawidd6/action-send-mail@v3.8.0
       with:
         server_address: smtp.gmail.com
         server_port: 465
