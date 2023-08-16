@@ -43,6 +43,7 @@ jobs:
         password: ${{ secrets.EMAIL_PASSWORD }}
         subject: Backend Image Build Failed
         to: liban.omer4@gmail.com
+        from: liban.omer4@gmail.com
         body: The backend image build failed.
 
     - name: Notify via Email if Backend Build Succeeded
@@ -55,6 +56,7 @@ jobs:
         password: ${{ secrets.EMAIL_PASSWORD }}
         subject: Backend Image Build Succeeded
         to: liban.omer4@gmail.com
+        from: liban.omer4@gmail.com
         body: The backend image build succeeded.
 
     - name: Push Backend Image
@@ -84,6 +86,7 @@ jobs:
         password: ${{ secrets.EMAIL_PASSWORD }}
         subject: Frontend Image Build Failed
         to: liban.omer4@gmail.com
+        from: liban.omer4@gmail.com
         body: The frontend image build failed.
 
     - name: Notify via Email if Frontend Build Succeeded
@@ -96,6 +99,7 @@ jobs:
         password: ${{ secrets.EMAIL_PASSWORD }}
         subject: Frontend Image Build Succeeded
         to: liban.omer4@gmail.com
+        from: liban.omer4@gmail.com
         body: The frontend image build succeeded.
 
     - name: Push Frontend Image
@@ -146,6 +150,7 @@ jobs:
         password: ${{ secrets.EMAIL_PASSWORD }}
         subject: Critical Vulnerabilities Detected in Backend Image
         to: liban.omer4@gmail.com
+        from: liban.omer4@gmail.com
         body: Critical vulnerabilities detected in the backend image!
 
     - name: Notify via Email if Frontend Scan Failed
@@ -158,5 +163,6 @@ jobs:
         password: ${{ secrets.EMAIL_PASSWORD }}
         subject: Critical Vulnerabilities Detected in Frontend Image
         to: liban.omer4@gmail.com
+        from: liban.omer4@gmail.com
         body: Critical vulnerabilities detected in the frontend image!
 
