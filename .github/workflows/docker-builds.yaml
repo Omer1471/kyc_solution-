@@ -33,6 +33,30 @@ jobs:
         tags: 147188/project1_backend:latest
         push: false
 
+    - name: Notify via Email if Backend Build Failed
+      if: failure() && steps.build_backend.outcome == 'failure'
+      uses: dawidd6/action-send-mail@v3
+      with:
+        server_address: smtp.gmail.com
+        server_port: 465
+        username: ${{ secrets.EMAIL_USERNAME }}
+        password: ${{ secrets.EMAIL_PASSWORD }}
+        subject: Backend Image Build Failed
+        to: liban.omer4@gmail.com
+        body: The backend image build failed.
+
+    - name: Notify via Email if Backend Build Succeeded
+      if: success() && steps.build_backend.outcome == 'success'
+      uses: dawidd6/action-send-mail@v3
+      with:
+        server_address: smtp.gmail.com
+        server_port: 465
+        username: ${{ secrets.EMAIL_USERNAME }}
+        password: ${{ secrets.EMAIL_PASSWORD }}
+        subject: Backend Image Build Succeeded
+        to: liban.omer4@gmail.com
+        body: The backend image build succeeded.
+
     - name: Push Backend Image
       uses: docker/build-push-action@v2
       with:
@@ -49,6 +73,30 @@ jobs:
         file: ./Dockerfile.frontend
         tags: 147188/project1_frontend:latest
         push: false
+
+    - name: Notify via Email if Frontend Build Failed
+      if: failure() && steps.build_frontend.outcome == 'failure'
+      uses: dawidd6/action-send-mail@v3
+      with:
+        server_address: smtp.gmail.com
+        server_port: 465
+        username: ${{ secrets.EMAIL_USERNAME }}
+        password: ${{ secrets.EMAIL_PASSWORD }}
+        subject: Frontend Image Build Failed
+        to: liban.omer4@gmail.com
+        body: The frontend image build failed.
+
+    - name: Notify via Email if Frontend Build Succeeded
+      if: success() && steps.build_frontend.outcome == 'success'
+      uses: dawidd6/action-send-mail@v3
+      with:
+        server_address: smtp.gmail.com
+        server_port: 465
+        username: ${{ secrets.EMAIL_USERNAME }}
+        password: ${{ secrets.EMAIL_PASSWORD }}
+        subject: Frontend Image Build Succeeded
+        to: liban.omer4@gmail.com
+        body: The frontend image build succeeded.
 
     - name: Push Frontend Image
       uses: docker/build-push-action@v2
@@ -88,7 +136,6 @@ jobs:
           echo "Consider updating your frontend image."
         fi
 
-    # Notify via Email
     - name: Notify via Email if Backend Scan Failed
       if: failure() && steps.build_backend.outcome == 'success' # Only notify if build was successful but scan failed
       uses: dawidd6/action-send-mail@v3
