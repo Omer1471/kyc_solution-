@@ -1,5 +1,5 @@
 FROM alpinelinux/ansible:latest
-WORKDIR /ansible
+WORKDIR /ansible 
 COPY . /ansible 
 CMD ["tail", "-f", "/dev/null"]
 
