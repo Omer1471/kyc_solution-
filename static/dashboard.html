@@ -1,23 +1,86 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>KYC Dashboard</title>
+    <title>Kea Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #091723;
+            color: #F2F8F3;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #F2F8F3;
+            border-radius: 8px;
+            color: #091723;
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .brand-logo {
+            max-width: 150px;
+            height: auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"],
+        input[type="file"],
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 4px;
+        }
+
+        input[type="submit"] {
+            background-color: #091723;
+            color: #F2F8F3;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0a1c2b;
+        }
+    </style>
 </head>
 <body>
-    <h1>KYC Dashboard</h1>
-    <form id="uploadForm" enctype="multipart/form-data">
-        <label for="user_id">User ID:</label>
-        <input type="text" id="user_id" name="user_id"><br><br>
-        
-        <label for="document_type">Document Type:</label>
-        <input type="text" id="document_type" name="document_type"><br><br>
-        
-        <label for="file">Select a file:</label>
-        <input type="file" id="file" name="file"><br><br>
-        
-        <input type="submit" value="Upload Document">
-    </form>
-    <div id="responseMessage"></div>
+    <div class="container">
+        <!-- Logo Integration -->
+        <div class="logo-container">
+            <img src="./images/Kealogo.jpeg" alt="Kea Logo" class="brand-logo">
+        </div>
+
+        <h1>Kea Dashboard</h1>
+        <form id="uploadForm" enctype="multipart/form-data">
+            <label for="user_id">User ID:</label>
+            <input type="text" id="user_id" name="user_id">
+
+            <label for="document_type">Document Type:</label>
+            <input type="text" id="document_type" name="document_type">
+
+            <label for="file">Select a file:</label>
+            <input type="file" id="file" name="file">
+
+            <input type="submit" value="Upload Document">
+        </form>
+        <div id="responseMessage"></div>
+    </div>
 
     <script>
         const uploadForm = document.getElementById('uploadForm');
