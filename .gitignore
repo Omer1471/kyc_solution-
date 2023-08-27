@@ -7,5 +7,7 @@ logs/
 tmp/
 node_modules/
 Cloud-security-/
+/static/images/
 #Ignore env file 
 .env
+
