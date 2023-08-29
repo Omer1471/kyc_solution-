@@ -1,8 +1,17 @@
-// App.js
-import React from 'react';
-import LoginScreen from './LoginScreen';  // Import LoginScreen
+import React, { useState } from 'react';
+import LoginScreen from './LoginScreen';
+import RegistrationScreen from './RegisterationScreen';
 
 export default function App() {
-  return <LoginScreen />;  // Render LoginScreen
+  const [isLogin, setIsLogin] = useState(true);
+
+  return (
+    <>
+      {isLogin ? <LoginScreen /> : <RegistrationScreen />}
+      <button onClick={() => setIsLogin(!isLogin)}>
+        {isLogin ? "Go to Registration" : "Go to Login"}
+      </button>
+    </>
+  );
 }
 
