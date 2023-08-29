@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 
-export default function RegistrationScreen() {
+export default function RegistrationScreen(props) {  // Added props
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -37,7 +37,7 @@ export default function RegistrationScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
-      <Image source={require('../static/images/Kealogo.jpeg')} style={styles.brandLogo} />
+        <Image source={require('../static/images/Kealogo.jpeg')} style={styles.brandLogo} />
       </View>
       <Text style={styles.title}>Sign Up with Kea</Text>
       <TextInput
@@ -55,6 +55,9 @@ export default function RegistrationScreen() {
       />
       <TouchableOpacity style={styles.button} onPress={handleRegister}>
         <Text style={styles.buttonText}>Register</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={props.switchToLogin}>  {/* Added this line */}
+      <Text style={{ color: '#F2F8F3' }}>Already have an account? Log in</Text>
       </TouchableOpacity>
     </View>
   );
@@ -98,4 +101,3 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
 });
-
