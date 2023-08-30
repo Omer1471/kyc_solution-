@@ -53,6 +53,13 @@ export default function LoginScreen(props) {  // Added props parameter
         value={password}
         onChangeText={setPassword}
       />
+  {/* Add the Login button */}
+  <TouchableOpacity onPress={handleLogin}>
+        <View style={styles.button}>
+          <Text style={styles.buttonText}>Login</Text>
+        </View>
+      </TouchableOpacity>
+
       <TouchableOpacity onPress={props.switchToRegister}>  {/* Added this line */}
       <Text style={{ color: '#F2F8F3' }}>Don't have an account? Register</Text>
       </TouchableOpacity>

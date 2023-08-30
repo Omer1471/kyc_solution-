@@ -10,6 +10,7 @@ import (
 	"myproject/kyc"
 
 	"github.com/gorilla/mux"
+	"github.com/gorilla/handlers"
 	"github.com/joho/godotenv" //// New import
 	_ "github.com/lib/pq"
 	"golang.org/x/crypto/bcrypt"
@@ -52,6 +53,16 @@ func main() {
 	}
 
 	r := mux.NewRouter()
+
+	// Add CORS configuration using gorilla/handlers
+	corsHandler := handlers.CORS(
+		handlers.AllowedOrigins([]string{"*"}), // Adjust this to restrict origins
+		handlers.AllowedMethods([]string{"GET", "POST", "OPTIONS"}),
+		handlers.AllowedHeaders([]string{"Content-Type"}),
+	)
+
+	r.Use(corsHandler) // Use the CORS handler
+
 	r.HandleFunc("/register", registerHandler).Methods("POST")
 	r.HandleFunc("/login", loginHandler).Methods("POST")
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/")))
@@ -65,13 +76,11 @@ func main() {
 		kyc.KYCStatusHandler(w, r, db)
 	}).Methods("GET")
 
-
 	// Add KYC routes using the kyc handler
 	kycHandler := kyc.NewKYCHandler(db)
 
 	r.HandleFunc("/kyc/upload", kycHandler.UploadKYCDocumentHandler).Methods("POST")
 	r.HandleFunc("/kyc/status/{document_id}", kycHandler.KYCStatusHandler).Methods("GET")
-
 
 	http.Handle("/", r)
 	if err = http.ListenAndServe(":5000", nil); err != nil {
