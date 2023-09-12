@@ -14,23 +14,25 @@ type KYCUser struct {
 
 // KYCHandler handles KYC submissions and stores them in the database
 func KYCHandler(c *gin.Context) {
-    var kycUser KYCUser
-    err := c.ShouldBindJSON(&kycUser)
-    if err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-        return
-    }
+	var kycUser KYCUser
+	err := c.ShouldBindJSON(&kycUser)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-    if kycUser.FirstName == "" || kycUser.MiddleName == "" || kycUser.LastName == "" {
-        c.JSON(http.StatusBadRequest, gin.H{"error": "All name fields are required."})
-        return
-    }
+	if kycUser.FirstName == "" || kycUser.MiddleName == "" || kycUser.LastName == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "All name fields are required."})
+		return
+	}
 
-    _, err = db.Exec("INSERT INTO kyc_users (first_name, middle_name, last_name) VALUES ($1, $2, $3) RETURNING id", kycUser.FirstName, kycUser.MiddleName, kycUser.LastName)
-    if err != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-        return
-    }
+	uniqueID := generateRandomID(16) // This will generate a 32-character long unique ID
 
-    c.JSON(http.StatusOK, gin.H{"status": "success", "message": "User information saved successfully!"})
+	_, err = db.Exec("INSERT INTO kyc_users (unique_id, first_name, middle_name, last_name) VALUES ($1, $2, $3, $4) RETURNING id", uniqueID, kycUser.FirstName, kycUser.MiddleName, kycUser.LastName)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"status": "success", "message": "User information saved successfully!"})
 }
