@@ -24,11 +24,6 @@
             text-align: center;
         }
 
-        .kyc-step {
-            display: none;
-            margin-top: 20px;
-        }
-
         label {
             display: block;
             margin-top: 10px;
@@ -65,8 +60,8 @@
     <div class="container">
         <h1>Kea KYC Process</h1>
 
-        <!-- Example for Step 1: -->
-        <div id="step1" class="kyc-step" data-step="0" style="display: block;">
+        <!-- Step 1: -->
+        <div id="step1">
             <h2>Step 1</h2>
             <p>Onboarding process phase 1</p>
             <p>Chase; Tell us a little about you, starting with your name:</p>
@@ -76,85 +71,47 @@
             <input type="text" id="middle_name" name="middle_name">
             <label for="last_name">Last Name:</label>
             <input type="text" id="last_name" name="last_name">
-            <button id="nextStep1">Next</button>
+            <button id="submitStep1">Submit</button>
         </div>
-
-        <!-- Example for Step 2: -->
-        <div id="step2" class="kyc-step" data-step="1">
-            <h2>Step 2</h2>
-            <p>When were you born, Liban?</p>
-            <p>Date of Birth:</p>
-            <input type="date" id="date_of_birth" name="date_of_birth" required>
-            <button id="nextStep2">Next</button>
-        </div>
-
-        <!-- Example for Step 3: -->
-        <div id="step3" class="kyc-step" data-step="2">
-            <h2>Step 3</h2>
-            <p>What's your mobile number?</p>
-            <label for="mobile_number">Mobile Number:</label>
-            <input type="tel" id="mobile_number" name="mobile_number" required>
-            <button id="nextStep3">Next</button>
-        </div>
-
-        <!-- Example for Step 4: -->
-        <div id="step4" class="kyc-step" data-step="3">
-            <h2>Step 4</h2>
-            <p>Verification Code</p>
-            <label for="verification_code">Enter Verification Code:</label>
-            <input type="text" id="verification_code" name="verification_code" required>
-            <button id="nextStep4">Next</button>
-        </div>
-
-        <!-- Example for Step 5: -->
-        <div id="step5" class="kyc-step" data-step="4">
-            <h2>Step 5</h2>
-            <p>Have you lived in this address for more than 3 years?</p>
-            <label for="address_duration">Yes</label>
-            <input type="radio" id="address_duration" name="address_duration" value="yes" required>
-            <label for="address_duration">No</label>
-            <input type="radio" id="address_duration" name="address_duration" value="no">
-            <button id="nextStep5">Next</button>
-        </div>
-
-        <!-- Example for Step 6: -->
-        <div id="step6" class="kyc-step" data-step="5">
-            <h2>Step 6</h2>
-            <p>Select the types of ID you have:</p>
-            <input type="checkbox" id="passport" name="id_type" value="Passport">
-            <label for="passport">Passport</label><br>
-            <input type="checkbox" id="driving_license" name="id_type" value="UK Driving Licence">
-            <label for="driving_license">UK Driving Licence</label><br>
-            <input type="checkbox" id="national_id" name="id_type" value="EU National Identity Card">
-            <label for="national_id">EU National Identity Card</label><br>
-            <button id="nextStep6">Next</button>
-        </div>
-
-        <!-- Example for Step 7: -->
-        <div id="step7" class="kyc-step" data-step="6">
-            <h2>Step 7</h2>
-            <p>Smile, it's time for your selfie.</p>
-            <!-- You can add a selfie capture mechanism here -->
-            <button id="nextStep7">Next</button>
-        </div>
-
-        <!-- ... Remaining HTML code ... -->
     </div>
 
+   
     <script>
-        const steps = document.querySelectorAll('.kyc-step');
-        let currentStep = 0;
+    document.getElementById("submitStep1").addEventListener("click", function(e) {
+        e.preventDefault();
 
-        const nextStepButtons = document.querySelectorAll('[id^="nextStep"]');
-        nextStepButtons.forEach((button, index) => {
-            button.addEventListener('click', () => {
-                if (currentStep < steps.length - 1) {
-                    steps[currentStep].style.display = 'none';
-                    currentStep++;
-                    steps[currentStep].style.display = 'block';
-                }
-            });
-        });
+    const firstName = document.getElementById("first_name").value;
+    const middleName = document.getElementById("middle_name").value;
+    const lastName = document.getElementById("last_name").value;
+
+    if (!firstName || !middleName || !lastName) {
+        alert("All name fields must be filled out.");
+        return; // Stop the function from continuing
+    }
+
+    const data = {
+        first_name: firstName,
+        middle_name: middleName,
+        last_name: lastName
+    };
+
+    fetch("/kyc", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "success") {
+            alert(data.message);
+            // You can add code to move to the next step if reintroduced in the future
+        } else {
+            alert(data.error);
+        }
+    });
+});
     </script>
 </body>
 </html>

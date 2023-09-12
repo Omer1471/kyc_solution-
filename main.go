@@ -2,13 +2,14 @@ package main
 
 import (
 	"database/sql"
-	//"encoding/json"
 	"log"
 	"net/http"
 	"os"
 
+	"myproject/Apis"
+// Import the apis package
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv" //// New import
+	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -43,6 +44,8 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// Initialize the database connection for the KYC API
+	apis.InitDB(db)
 
 	router := gin.New()
 	router.Use(gin.Logger())
@@ -50,9 +53,8 @@ func main() {
 
 	router.POST("/register", registerHandler)
 	router.POST("/login", loginHandler)
+	router.POST("/kyc", apis.KYCHandler) // Use the KYC handler from the apis package
 	router.Static("/", "./static")
-
-	
 
 	router.Run(":5000")
 }
