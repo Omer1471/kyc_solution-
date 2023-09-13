@@ -29,7 +29,8 @@ func InitDB(database *sql.DB) {
 		unique_id VARCHAR(255) UNIQUE NOT NULL,
 		first_name TEXT NOT NULL,
 		middle_name TEXT,
-		last_name TEXT NOT NULL
+		last_name TEXT NOT NULL,
+		date_of_birth DATE
 	);
 	`
 	_, err = db.Exec(createTable)

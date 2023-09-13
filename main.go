@@ -5,9 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
-
 	"myproject/Apis"
-// Import the apis package
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
@@ -47,14 +45,17 @@ func main() {
 	// Initialize the database connection for the KYC API
 	apis.InitDB(db)
 
-	router := gin.New()
-	router.Use(gin.Logger())
-	router.Use(gin.Recovery())
+	router := gin.Default()
 
 	router.POST("/register", registerHandler)
 	router.POST("/login", loginHandler)
-	router.POST("/kyc", apis.KYCHandler) // Use the KYC handler from the apis package
-	router.Static("/", "./static")
+	router.POST("/kyc-step1", apis.KYCHandlerStep1)
+	router.POST("/kyc-step2", apis.KYCHandlerStep2)
+
+
+	// Serve static files; 
+	router.Static("/static", "./static")
+
 
 	router.Run(":5000")
 }

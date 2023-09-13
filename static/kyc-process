@@ -73,45 +73,84 @@
             <input type="text" id="last_name" name="last_name">
             <button id="submitStep1">Submit</button>
         </div>
+
+        <!-- Step 2: -->
+        <div id="step2" style="display: none;">
+            <h2>Step 2</h2>
+            <p id="birthQuestion">When were you born, [Name]?</p>
+            <label for="date_of_birth">Date of Birth:</label>
+            <input type="date" id="date_of_birth" name="date_of_birth">
+            <button id="submitStep2">Submit</button>
+        </div>
     </div>
 
-   
     <script>
-    document.getElementById("submitStep1").addEventListener("click", function(e) {
-        e.preventDefault();
+        let uniqueID;  // This will store the unique ID received from the backend during Step 1
 
-    const firstName = document.getElementById("first_name").value;
-    const middleName = document.getElementById("middle_name").value;
-    const lastName = document.getElementById("last_name").value;
+        document.getElementById("submitStep1").addEventListener("click", function(e) {
+            e.preventDefault();
 
-    if (!firstName || !middleName || !lastName) {
-        alert("All name fields must be filled out.");
-        return; // Stop the function from continuing
-    }
+            const firstName = document.getElementById("first_name").value;
+            const middleName = document.getElementById("middle_name").value;
+            const lastName = document.getElementById("last_name").value;
 
-    const data = {
-        first_name: firstName,
-        middle_name: middleName,
-        last_name: lastName
-    };
+            if (!firstName || !middleName || !lastName) {
+                alert("All name fields must be filled out.");
+                return; // Stop the function from continuing
+            }
 
-    fetch("/kyc", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === "success") {
-            alert(data.message);
-            // You can add code to move to the next step if reintroduced in the future
-        } else {
-            alert(data.error);
-        }
-    });
-});
+            const data = {
+                first_name: firstName,
+                middle_name: middleName,
+                last_name: lastName
+            };
+
+            fetch("/kyc-step1", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    uniqueID = data.unique_id; // Store the uniqueID received from the backend
+                    document.getElementById('birthQuestion').textContent = `When were you born, ${firstName}?`;
+                    document.getElementById('step1').style.display = 'none';
+                    document.getElementById('step2').style.display = 'block';
+                } else {
+                    alert(data.error);
+                }
+            });
+        });
+
+        document.getElementById("submitStep2").addEventListener("click", function(e) {
+            e.preventDefault();
+
+            const dateOfBirth = document.getElementById("date_of_birth").value;
+
+            const dobData = {
+                unique_id: uniqueID,
+                date_of_birth: dateOfBirth
+            };
+
+            fetch("/kyc-step2", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(dobData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    alert("Date of birth saved successfully!");
+                } else {
+                    alert(data.error);
+                }
+            });
+        });
     </script>
 </body>
 </html>
