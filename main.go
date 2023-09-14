@@ -51,6 +51,8 @@ func main() {
 	router.POST("/login", loginHandler)
 	router.POST("/kyc-step1", apis.KYCHandlerStep1)
 	router.POST("/kyc-step2", apis.KYCHandlerStep2)
+	router.POST("/kyc-step3", apis.KYCHandlerStep3)
+	router.POST("/kyc-step4", apis.KYCHandlerStep4)
 
 
 	// Serve static files; 

@@ -30,7 +30,14 @@ func InitDB(database *sql.DB) {
 		first_name TEXT NOT NULL,
 		middle_name TEXT,
 		last_name TEXT NOT NULL,
-		date_of_birth DATE
+		date_of_birth DATE,
+		address_line1 TEXT,
+		address_line2 TEXT,
+		city TEXT,
+		state_province TEXT,
+		postal_code TEXT,
+		country TEXT,
+		lived_at_address_3_years BOOLEAN
 	);
 	`
 	_, err = db.Exec(createTable)

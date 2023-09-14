@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Kea KYC Process</title>
     <style>
@@ -56,21 +57,22 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
-        <h1>Kea KYC Process</h1>
+        <h1>Kea</h1>
 
         <!-- Step 1: -->
         <div id="step1">
             <h2>Step 1</h2>
-            <p>Onboarding process phase 1</p>
-            <p>Chase; Tell us a little about you, starting with your name:</p>
+            <p>Onboarding process</p>
+            <p>Tell us a little about you, starting with your name:</p>
             <label for="first_name">First Name:</label>
             <input type="text" id="first_name" name="first_name" required>
             <label for="middle_name">Middle Name:</label>
             <input type="text" id="middle_name" name="middle_name">
             <label for="last_name">Last Name:</label>
-            <input type="text" id="last_name" name="last_name">
+            <input type="text" id="last_name" name="last_name" required>
             <button id="submitStep1">Submit</button>
         </div>
 
@@ -79,25 +81,52 @@
             <h2>Step 2</h2>
             <p id="birthQuestion">When were you born, [Name]?</p>
             <label for="date_of_birth">Date of Birth:</label>
-            <input type="date" id="date_of_birth" name="date_of_birth">
+            <input type="date" id="date_of_birth" name="date_of_birth" required>
             <button id="submitStep2">Submit</button>
+        </div>
+
+        <!-- Step 3: -->
+        <div id="step3" style="display: none;">
+            <h2>Step 3</h2>
+            <p>Now, please provide your address details:</p>
+            <label for="address_line1">Address Line 1:</label>
+            <input type="text" id="address_line1" name="address_line1" required>
+            <label for="address_line2">Address Line 2:</label>
+            <input type="text" id="address_line2" name="address_line2">
+            <label for="city">City:</label>
+            <input type="text" id="city" name="city" required>
+            <label for="state_province">State/Province:</label>
+            <input type="text" id="state_province" name="state_province" required>
+            <label for="postal_code">Postal Code:</label>
+            <input type="text" id="postal_code" name="postal_code" required>
+            <label for="country">Country:</label>
+            <input type="text" id="country" name="country" required>
+            <button id="submitStep3">Submit</button>
+        </div>
+
+        <!-- Step 4: -->
+        <div id="step4" style="display: none;">
+            <h2>Step 4</h2>
+            <p>Based on the address you provided:</p>
+            <p id="userAddress"></p>
+            <label>Have you lived at this address for more than 3 years?</label>
+            <input type="radio" id="yes" name="livedMoreThan3Years" value="yes">
+            <label for="yes">Yes</label>
+            <input type="radio" id="no" name="livedMoreThan3Years" value="no">
+            <label for="no">No</label>
+            <button id="submitStep4">Continue</button>
         </div>
     </div>
 
     <script>
-        let uniqueID;  // This will store the unique ID received from the backend during Step 1
+        let uniqueID; // This will store the unique ID received from the backend during Step 1
 
-        document.getElementById("submitStep1").addEventListener("click", function(e) {
+        document.getElementById("submitStep1").addEventListener("click", function (e) {
             e.preventDefault();
 
             const firstName = document.getElementById("first_name").value;
             const middleName = document.getElementById("middle_name").value;
             const lastName = document.getElementById("last_name").value;
-
-            if (!firstName || !middleName || !lastName) {
-                alert("All name fields must be filled out.");
-                return; // Stop the function from continuing
-            }
 
             const data = {
                 first_name: firstName,
@@ -112,20 +141,20 @@
                 },
                 body: JSON.stringify(data)
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === "success") {
-                    uniqueID = data.unique_id; // Store the uniqueID received from the backend
-                    document.getElementById('birthQuestion').textContent = `When were you born, ${firstName}?`;
-                    document.getElementById('step1').style.display = 'none';
-                    document.getElementById('step2').style.display = 'block';
-                } else {
-                    alert(data.error);
-                }
-            });
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === "success") {
+                        uniqueID = data.unique_id; // Store the uniqueID received from the backend
+                        document.getElementById('birthQuestion').textContent = `When were you born, ${firstName}?`;
+                        document.getElementById('step1').style.display = 'none';
+                        document.getElementById('step2').style.display = 'block';
+                    } else {
+                        alert(data.error);
+                    }
+                });
         });
 
-        document.getElementById("submitStep2").addEventListener("click", function(e) {
+        document.getElementById("submitStep2").addEventListener("click", function (e) {
             e.preventDefault();
 
             const dateOfBirth = document.getElementById("date_of_birth").value;
@@ -142,15 +171,96 @@
                 },
                 body: JSON.stringify(dobData)
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === "success") {
-                    alert("Date of birth saved successfully!");
-                } else {
-                    alert(data.error);
-                }
-            });
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === "success") {
+                        document.getElementById('step2').style.display = 'none';
+                        document.getElementById('step3').style.display = 'block';
+                    } else {
+                        alert(data.error);
+                    }
+                });
         });
+
+        document.getElementById("submitStep3").addEventListener("click", function (e) {
+            e.preventDefault();
+
+            const addressData = {
+                unique_id: uniqueID,
+                address_line1: document.getElementById("address_line1").value,
+                address_line2: document.getElementById("address_line2").value,
+                city: document.getElementById("city").value,
+                state_province: document.getElementById("state_province").value,
+                postal_code: document.getElementById("postal_code").value,
+                country: document.getElementById("country").value
+            };
+
+            fetch("/kyc-step3", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(addressData)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === "success") {
+                        document.getElementById('userAddress').textContent = `
+                            ${addressData.address_line1}, ${addressData.address_line2}, ${addressData.city}, ${addressData.state_province}, ${addressData.postal_code}, ${addressData.country}
+                        `;
+                        document.getElementById('step3').style.display = 'none';
+                        document.getElementById('step4').style.display = 'block';
+                    } else {
+                        alert(data.error);
+                    }
+                });
+        });
+
+        document.getElementById("submitStep4").addEventListener("click", function (e) {
+    e.preventDefault();
+
+    let livedMoreThan3Years;
+    const yesOption = document.getElementById("yes");
+    const noOption = document.getElementById("no");
+
+    if (yesOption.checked) {
+        livedMoreThan3Years = true;
+    } else if (noOption.checked) {
+        livedMoreThan3Years = false;
+    } else {
+        alert("Please select an option.");
+        return; // This will prevent the code from proceeding if neither radio button is selected.
+    }
+
+    const step4Data = {
+        unique_id: uniqueID,
+        lived_at_address_3_years: livedMoreThan3Years  // This now sends a boolean
+    };
+
+    fetch("/kyc-step4", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(step4Data)
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === "success") {
+                // Move to the next step or do something else depending on your requirement
+                // For instance:
+                // document.getElementById('step4').style.display = 'none';
+                // document.getElementById('step5').style.display = 'block';
+                alert("Data added successfully!");
+            } else {
+                alert(data.error);
+            }
+        });
+});
+ // ... you can continue this for step 4 and further ...
+        
     </script>
+    
 </body>
+
 </html>
