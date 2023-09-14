@@ -117,6 +117,28 @@
             <button id="submitStep4">Continue</button>
         </div>
     </div>
+    <!-- Step 5: -->
+    <div id="step5" style="display:none;">
+        <h2>Select your ID type:</h2>
+        <label>
+            <input type="radio" name="idType" value="Passport"> Passport
+        </label>
+        <label>
+            <input type="radio" name="idType" value="UK driving licence"> UK driving licence
+        </label>
+        <label>
+            <input type="radio" name="idType" value="EU national identity card"> EU national identity card
+        </label>
+    
+        <h2>Upload a photo of your selected ID:</h2>
+        <input type="file" id="idFile">
+    
+        <button id="submitStep5">Submit</button>
+    
+        <p id="uploadStatus"></p>
+    </div>
+    
+
 
     <script>
         let uniqueID; // This will store the unique ID received from the backend during Step 1
@@ -258,7 +280,55 @@
         });
 });
  // ... you can continue this for step 4 and further ...
-        
+ document.getElementById("submitStep5").addEventListener("click", function(event) {
+    event.preventDefault(); // Stop form submission
+
+    let selectedID = document.querySelector('input[name="idType"]:checked');
+    let uploadedFile = document.getElementById("idFile").files[0];
+    
+    if (selectedID && uploadedFile) {
+        let idType = selectedID.value;
+        document.getElementById("uploadStatus").innerText = "You selected: " + idType + " and uploaded a document.";
+
+        // For simplicity, we're just sending the idType and uniqueID.
+        // Typically, you'd also send the uploaded file in a more complex request using FormData.
+        fetch("/kyc-step5", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                unique_id: uniqueID,  // Use the stored uniqueID
+                id_type: idType
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === "success") {
+                // Handle success scenario, e.g., move to the next step
+            } else {
+                alert(data.error);
+            }
+        });
+
+    } else {
+        if (!selectedID) {
+            alert("Please select an ID type.");
+        } else {
+            alert("Please upload your ID document.");
+        }
+    }
+});
+
+document.getElementById("submitStep4").addEventListener("click", function (e) {
+    // ... existing code ...
+
+    // At the end of the event listener for submitStep4, update the display properties to transition to Step 5:
+    document.getElementById('step4').style.display = 'none';
+    document.getElementById('step5').style.display = 'block';
+});
+
+ 
     </script>
     
 </body>

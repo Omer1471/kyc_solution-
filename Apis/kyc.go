@@ -30,6 +30,10 @@ type KYCUserStep4 struct {
     UniqueID              string `json:"unique_id"`
     LivedAtAddress3Years  bool   `json:"lived_at_address_3_years"`  // true for Yes, false for No
 }
+type KYCUserStep5 struct {
+    UniqueID   string `json:"unique_id"`
+    IDType     string `json:"id_type"` // "Passport", "UK driving licence", or "EU national identity card"
+}
 
 
 // KYCHandlerStep1 handles the first step of the KYC process
@@ -105,4 +109,35 @@ func KYCHandlerStep4(c *gin.Context) {
     }
 
     c.JSON(http.StatusOK, gin.H{"status": "success", "message": "Address duration information saved successfully!"})
+}
+func KYCHandlerStep5(c *gin.Context) {
+    var user KYCUserStep5
+    err := c.ShouldBindJSON(&user)
+    if err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+        return
+    }
+
+    // Validate ID type
+    validIDTypes := []string{"Passport", "UK driving licence", "EU national identity card"}
+    isValidType := false
+    for _, validType := range validIDTypes {
+        if user.IDType == validType {
+            isValidType = true
+            break
+        }
+    }
+    if !isValidType {
+        c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID type selected."})
+        return
+    }
+
+    // Store the ID type in the database
+    _, err = db.Exec("UPDATE kyc_users SET id_type = $1 WHERE unique_id = $2", user.IDType, user.UniqueID)
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+        return
+    }
+
+    c.JSON(http.StatusOK, gin.H{"status": "success", "message": "ID type saved successfully!"})
 }

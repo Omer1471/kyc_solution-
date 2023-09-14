@@ -37,7 +37,8 @@ func InitDB(database *sql.DB) {
 		state_province TEXT,
 		postal_code TEXT,
 		country TEXT,
-		lived_at_address_3_years BOOLEAN
+		lived_at_address_3_years BOOLEAN,
+		id_type TEXT
 	);
 	`
 	_, err = db.Exec(createTable)
