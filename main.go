@@ -1,15 +1,20 @@
 package main
 
 import (
+	
 	"database/sql"
 	"log"
+	"myproject/Apis"
 	"net/http"
 	"os"
-	"myproject/Apis"
+
+	//"github.com/aws/aws-sdk-go"
+	
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"golang.org/x/crypto/bcrypt"
+
 )
 
 type User struct {
@@ -54,6 +59,8 @@ func main() {
 	router.POST("/kyc-step3", apis.KYCHandlerStep3)
 	router.POST("/kyc-step4", apis.KYCHandlerStep4)
 	router.POST("/kyc-step5", apis.KYCHandlerStep5)
+	
+
 
 
 
@@ -109,3 +116,4 @@ func loginHandler(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"status": "success", "message": "Logged in successfully!"})
 }
+

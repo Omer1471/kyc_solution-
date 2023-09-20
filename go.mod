@@ -3,6 +3,7 @@ module myproject
 go 1.12
 
 require (
+	github.com/aws/aws-sdk-go v1.45.13 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/gin-gonic/gin v1.9.1 // indirect
 	github.com/gorilla/mux v1.8.0 // indirect
