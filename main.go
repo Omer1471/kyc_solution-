@@ -59,7 +59,8 @@ func main() {
 	router.POST("/kyc-step3", apis.KYCHandlerStep3)
 	router.POST("/kyc-step4", apis.KYCHandlerStep4)
 	router.POST("/kyc-step5", apis.KYCHandlerStep5)
-	
+	router.POST("/get-presigned-url", apis.GetPresignedURLHandler)
+
 
 
 

@@ -3,6 +3,11 @@ package apis
 import (
 	"net/http"
 	"github.com/gin-gonic/gin"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3"
+	"fmt"
+	"time"
 
 )
 
@@ -141,4 +146,35 @@ func KYCHandlerStep5(c *gin.Context) {
     }
 
     c.JSON(http.StatusOK, gin.H{"status": "success", "message": "ID type saved successfully!"})
+}
+
+var s3Session = session.Must(session.NewSession(&aws.Config{
+	Region: aws.String("eu-west-2"),  // e.g., "us-west-1"
+	// Other AWS session configuration may be added here
+}))
+
+// GetPresignedURLHandler generates a presigned URL for S3 uploads
+func GetPresignedURLHandler(c *gin.Context) {
+	var request struct {
+		UniqueID string `json:"unique_id"`
+		IDType   string `json:"id_type"`
+		FileName string `json:"file_name"`
+	}
+	if err := c.ShouldBindJSON(&request); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	s3svc := s3.New(s3Session)
+	req, _ := s3svc.PutObjectRequest(&s3.PutObjectInput{
+		Bucket: aws.String("kycsolution"),
+		Key:    aws.String(fmt.Sprintf("%s/%s/%s", request.UniqueID, request.IDType, request.FileName)),
+	})
+	presignedURL, err := req.Presign(15 * time.Minute)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate presigned URL."})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"presigned_url": presignedURL})
 }

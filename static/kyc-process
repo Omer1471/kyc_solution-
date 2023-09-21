@@ -142,7 +142,6 @@
     </div>
     
 
-
     <script>
         let uniqueID; // This will store the unique ID received from the backend during Step 1
 
@@ -322,6 +321,118 @@
         }
     }
 });
+
+document.getElementById("submitStep4").addEventListener("click", function (e) {
+    // ... existing code ...
+
+    // At the end of the event listener for submitStep4, update the display properties to transition to Step 5:
+    document.getElementById('step4').style.display = 'none';
+    document.getElementById('step5').style.display = 'block';
+    document.getElementById('step5').style.display = 'none';
+});
+//... (rest of the existing code) ...
+
+// Submitting Step 5: ID type and photo submission
+document.getElementById("submitStep5").addEventListener("click", function(event) {
+    event.preventDefault();
+
+    let selectedID = document.querySelector('input[name="idType"]:checked');
+    let uploadedFile = document.getElementById("idFile").files[0];
+    
+    if (selectedID && uploadedFile) {
+        let idType = selectedID.value;
+        document.getElementById("uploadStatus").innerText = "You selected: " + idType + " and uploaded a document.";
+
+        // For simplicity, we're just sending the idType and uniqueID.
+        // Typically, you'd also send the uploaded file in a more complex request using FormData.
+        fetch("/kyc-step5", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                unique_id: uniqueID,  // Use the stored uniqueID
+                id_type: idType
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === "success") {
+                // Transition from Step 5 to Step 6
+                document.getElementById('step5').style.display = 'none';
+                document.getElementById('step6').style.display = 'block';
+                
+            } else {
+                alert(data.error);
+            }
+        });
+    } else {
+        if (!selectedID) {
+            alert("Please select an ID type.");
+        } else {
+            alert("Please upload your ID document.");
+        }
+    }
+});
+
+
+document.getElementById("submitStep5").addEventListener("click", function(event) {
+    event.preventDefault(); // Stop form submission
+
+    let selectedID = document.querySelector('input[name="idType"]:checked');
+    let uploadedFile = document.getElementById("idFile").files[0];
+    
+    if (selectedID && uploadedFile) {
+        let idType = selectedID.value;
+
+        // Get a pre-signed URL for uploading to S3 from your backend
+        fetch("/get-presigned-url", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                unique_id: uniqueID,
+                file_name: uploadedFile.name,
+                file_type: uploadedFile.type
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            let presignedUrl = data.presigned_url;
+
+            // Upload the file using the pre-signed URL
+            return fetch(presignedUrl, {
+                method: "PUT",
+                body: uploadedFile,
+                headers: {
+                    "Content-Type": uploadedFile.type
+                }
+            });
+        })
+        .then(response => {
+            if (response.ok) {
+                document.getElementById("uploadStatus").innerText = "Document uploaded successfully!";
+                
+                // Transition from Step 5 to Step 6
+                document.getElementById('step5').style.display = 'none';
+                document.getElementById('step6').style.display = 'block';
+            } else {
+                alert("Failed to upload document. Please try again.");
+            }
+        })
+        .catch(error => {
+            console.error("Error during the upload:", error);
+        });
+    } else {
+        if (!selectedID) {
+            alert("Please select an ID type.");
+        } else {
+            alert("Please upload your ID document.");
+        }
+    }
+});
+
 
 document.getElementById("submitStep4").addEventListener("click", function (e) {
     // ... existing code ...
