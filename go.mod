@@ -9,6 +9,7 @@ require (
 	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/lib/pq v1.10.9 // indirect
+	gocv.io/x/gocv v0.34.0 // indirect
 	golang.org/x/crypto v0.11.0 // indirect
 	golang.org/x/tools/gopls v0.7.5 // indirect
 )

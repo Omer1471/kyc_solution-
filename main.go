@@ -14,7 +14,8 @@ import (
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"golang.org/x/crypto/bcrypt"
-
+	
+	
 )
 
 type User struct {
@@ -60,6 +61,8 @@ func main() {
 	router.POST("/kyc-step4", apis.KYCHandlerStep4)
 	router.POST("/kyc-step5", apis.KYCHandlerStep5)
 	router.POST("/get-presigned-url", apis.GetPresignedURLHandler)
+	
+
 
 
 
