@@ -1,0 +1,38 @@
+---
+- hosts: zabbix_servers
+  become: yes
+  tasks:
+    - name: Install required Python MySQL module
+      apt:
+        name: python3-pymysql  # For Python 3
+        state: present
+      become_user: root
+
+    - name: Update apt package cache
+      apt:
+        update_cache: yes
+
+    - name: Install Zabbix server packages for Ubuntu
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - zabbix-server-mysql
+        - zabbix-frontend-php
+        - zabbix-agent
+        - mysql-server
+
+    - name: Start and enable the Zabbix server and agent services
+      service:
+        name: "{{ item }}"
+        state: started
+        enabled: yes
+      loop:
+        - zabbix-server
+        - zabbix-agent
+
+    - name: Configure Zabbix database (MySQL) for Ubuntu
+      become_user: root
+      command: mysql -uroot -p{{ mysql_zabbix_password }} -e "CREATE DATABASE IF NOT EXISTS zabbix character set utf8 collate utf8_bin;"
+      ignore_errors: yes
+
