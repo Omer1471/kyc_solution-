@@ -1,0 +1,10 @@
+---
+- name: Install auditd on a single server
+  hosts: ec2-3-8-206-45.eu-west-2.compute.amazonaws.com 
+  become: yes
+  tasks:
+    - name: Ensure auditd is installed
+      package:
+        name: auditd
+        state: present
+
