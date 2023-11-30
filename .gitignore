@@ -1,7 +1,9 @@
 # Ignore sensitive files
 passwords.txt
 secret.key
-
+zabbix_server.conf.j2
+vault.yml
+new_vault.yml
 # Ignore directories
 logs/
 tmp/
@@ -10,4 +12,6 @@ Cloud-security-/
 /static/images/
 #Ignore env file 
 .env
+
+
 
